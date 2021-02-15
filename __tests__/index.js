@@ -173,8 +173,8 @@ describe('🚫  Middleware Cognito Groups Authorizer', () => {
       },
       requestContext: {
         authorizer: {
-          claims: {
-            jwt: {
+          jwt: {
+            claims: {
               'cognito:groups': ['Admin', 'User']
             }
           }
