@@ -154,6 +154,39 @@ describe('🚫  Middleware Cognito Groups Authorizer', () => {
     expect(body).toEqual({ foo: 'bar' })
   })
 
+  test('It should authorize the user if at least one cognito:groups matches with authorized roles (v2 request)', async () => {
+    const handler = middy((event, context, cb) => {
+      cb(null, event.body) // propagates the body as a response
+    })
+
+    handler.use(cognitoGroupsAuthorizer({
+      allowedRoles: ['Admin']
+    }))
+
+    // invokes the handler
+    const event = {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: {
+        foo: 'bar'
+      },
+      requestContext: {
+        authorizer: {
+          claims: {
+            jwt: {
+              'cognito:groups': ['Admin', 'User']
+            }
+          }
+        }
+      }
+    }
+
+    const body = await invoke(handler, event)
+
+    expect(body).toEqual({ foo: 'bar' })
+  })
+
   test('It should authorize the user if cognito:groups matches with authorized roles', async () => {
     const handler = middy((event, context, cb) => {
       cb(null, event.body) // propagates the body as a response

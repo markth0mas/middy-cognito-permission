@@ -29,7 +29,8 @@ module.exports = (opts) => {
         throw new createError.Unauthorized('Unauthorized')
       }
 
-      let userGroups = 'cognito:groups' in authorizer.claims ? authorizer.claims['cognito:groups'] : []
+      const claims = 'jwt' in authorizer.claims ? authorizer.claims['jwt'] : authorizer.claims;
+      let userGroups = 'cognito:groups' in claims ? claims['cognito:groups'] : []
 
       if (typeof userGroups === 'string') {
         userGroups = [userGroups]
